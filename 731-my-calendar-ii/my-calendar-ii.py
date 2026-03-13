@@ -1,25 +1,30 @@
+from sortedcontainers import SortedDict
 class MyCalendarTwo:
 
     def __init__(self):
-        self.booked = []
-        self.booked2 = []
-
-
-    def book(self, startTime: int, endTime: int) -> bool:
-        if len(self.booked) == 0:
-            self.booked.append([startTime, endTime-1])
-            return True
-
-        for start,end in self.booked2:
-            if startTime <= end and endTime-1 >= start:
-                return False
+        self.treemap = SortedDict()
         
-        for start,end in self.booked:
-            if startTime <= end and endTime-1 >= start:
-                self.booked2.append([max(start,startTime),min(end,endTime-1)])
-            
-        self.booked.append([startTime, endTime-1])
+    def book(self, startTime: int, endTime: int) -> bool:
+        self.treemap[startTime] = self.treemap.get(startTime,0) + 1
+        self.treemap[endTime] = self.treemap.get(endTime,0) + -1
+
+        rooms = 0
+        for val in self.treemap.values():
+            rooms += val
+            if rooms > 2:
+                self.treemap[startTime] = self.treemap.get(startTime,0) - 1
+                self.treemap[endTime] = self.treemap.get(endTime,0) + 1
+
+                if self.treemap[startTime] == 0:
+                    del self.treemap[startTime]
+                if self.treemap[endTime] == 0:
+                    del self.treemap[endTime]
+
+                return False
+
         return True
+
+
         
 
 
