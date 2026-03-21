@@ -1,12 +1,11 @@
+from sortedcontainers import SortedSet
 class SummaryRanges:
 
     def __init__(self):
-        self.range = []
+        self.range = SortedSet()
 
     def addNum(self, value: int) -> None:
-        if value not in self.range:
-            self.range.append(value)
-            self.range.sort()
+        self.range.add(value)
 
     def getIntervals(self) -> List[List[int]]:
         if len(self.range) == 0:
@@ -14,14 +13,14 @@ class SummaryRanges:
 
         interval = []
         l = r = None
-        for i in range(len(self.range)):
+        for num in self.range:
             if l is None and r is None:
-                l = r = self.range[i]
-            elif self.range[i] == r + 1:
-                r = self.range[i]
+                l = r = num
+            elif num == r + 1:
+                r = num
             else:
                 interval.append([l,r])
-                l = r = self.range[i]
+                l = r = num
     
         interval.append([l,r])
         return interval
