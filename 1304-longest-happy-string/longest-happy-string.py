@@ -1,28 +1,33 @@
+import heapq
 class Solution:
     def longestDiverseString(self, a: int, b: int, c: int) -> str:
+        pq = []
+        if a > 0:
+            heapq.heappush_max(pq,(a,'a'))
+        if b > 0:
+            heapq.heappush_max(pq,(b,'b'))
+        if c > 0:
+            heapq.heappush_max(pq,(c,'c'))
+
         res = ''
-        cnt_a = cnt_b = cnt_c = 0
-        while True:
-            if a > 0 and ((a >= b and a >= c and cnt_a < 2) or (b >= a >= c and cnt_b == 2) or (c >= a >= b and cnt_c == 2)):
-                res += 'a'
-                cnt_a += 1
-                cnt_b = cnt_c = 0
-                a -= 1
-            elif b > 0 and ((b >= a and b >= c and cnt_b < 2) or (a >= b >= c and cnt_a == 2) or (c >= b >= a and cnt_c == 2)) :
-                res += 'b'
-                cnt_b += 1
-                cnt_a = cnt_c = 0
-                b -= 1
-            elif c > 0 and ((c >= a and c >= b and cnt_c < 2) or (a >= c >= b and cnt_a == 2) or (b >= c >= a and cnt_b == 2)):
-                res += 'c'
-                cnt_c += 1
-                cnt_a = cnt_b = 0
-                c -= 1
+        while pq:
+            cnt,char = heapq.heappop_max(pq)
+            if len(res) >= 2 and res[-1] == char and res[-2] == char:
+                if not pq:
+                    break
+                cnt2,char2 = heapq.heappop_max(pq)
+                res += char2
+                cnt2 -= 1
+                if cnt2 > 0:
+                    heapq.heappush_max(pq,(cnt2,char2))
+                heapq.heappush_max(pq,(cnt,char))
             else:
-                break
+                res += char
+                cnt -= 1
+                if cnt > 0:
+                    heapq.heappush_max(pq,(cnt,char))
 
         return res
-
-
+            
 
 
